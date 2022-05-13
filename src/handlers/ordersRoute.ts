@@ -5,7 +5,11 @@ const authModel = require('../models/authModel');
 
 const router = express.Router();
 
-router.route('/').post(authModel.protect, orderModel.createOrder);
-router.route('/:id').get(orderModel.getOrder).delete(orderModel.deleteOrder);
+router
+  .route('/')
+  .get(authModel.protect, orderModel.getAllOrders)
+  .post(authModel.protect, orderModel.createOrder)
+  .put(authModel.protect, orderModel.updateOrder);
+router.route('/:id').delete(authModel.protect, orderModel.deleteOrder);
 
 module.exports = router;

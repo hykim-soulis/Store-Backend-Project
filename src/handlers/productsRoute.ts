@@ -12,7 +12,7 @@ router
 router
   .route('/:id')
   .get(productModel.getProduct)
-  .delete(productModel.deleteProduct)
-  .put(productModel.updateProduct);
+  .put(authModel.protect, productModel.updateProduct)
+  .delete(authModel.protect, productModel.deleteProduct);
 
 module.exports = router;

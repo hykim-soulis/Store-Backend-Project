@@ -21,7 +21,8 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
     });
     return user;
   } catch (err) {
-    throw new Error(`Unable to create user: ${err}`);
+    res.status(400).json(err);
+    console.log(err);
   }
 };
 
@@ -41,10 +42,11 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
         data: { user },
       });
     } else {
-      console.error('Invalid information');
+      throw new Error('Invalid information');
     }
   } catch (err) {
-    console.error(err);
+    res.status(400).json(err);
+    console.log(err);
   }
 };
 
@@ -56,7 +58,6 @@ exports.protect = async (req: Request, res: Response, next: NextFunction) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   const currentUser = decoded.user;
   res.locals.user = currentUser;

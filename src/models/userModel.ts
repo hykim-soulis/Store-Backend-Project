@@ -9,7 +9,7 @@ export type User = {
   password: string;
 };
 
-exports.getAllUsers = async (_req: Request, res: Response): Promise<User[]> => {
+exports.getAllUsers = async (_req: Request, res: Response) => {
   try {
     const conn = await client.connect();
     const sql = 'SELECT * FROM users';
@@ -27,43 +27,11 @@ exports.getAllUsers = async (_req: Request, res: Response): Promise<User[]> => {
     return result.rows;
   } catch (err) {
     res.status(400).json(err);
-    throw new Error(`Cannot get all users ${err}`);
+    console.log(err);
   }
 };
 
-// // Return, console.log user_id
-// exports.createUser = async (req: Request, res: Response): Promise<User> => {
-//   const newUser: User = {
-//     first_name: req.body.first_name,
-//     last_name: req.body.last_name,
-//     password: req.body.password,
-//   };
-//   try {
-//     const conn = await client.connect();
-//     const sql = `INSERT INTO users (first_name, last_name, password_digest) VALUES ($1, $2, $3)`;
-//     const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds));
-
-//     const result = await conn.query(sql, [
-//       newUser.first_name,
-//       newUser.last_name,
-//       hash,
-//     ]);
-//     conn.release();
-//     console.log(result.rows[0]);
-//     res.status(201).json({
-//       status: 'success',
-//       data: {
-//         newUser,
-//       },
-//     });
-//     return newUser;
-//   } catch (err) {
-//     res.status(400).json(err);
-//     throw new Error(`Cannot create a user ${err}`);
-//   }
-// };
-
-exports.getUser = async (req: Request, res: Response): Promise<User[]> => {
+exports.getUser = async (req: Request, res: Response) => {
   const user_id = req.params.id;
   try {
     const conn = await client.connect();
@@ -81,19 +49,19 @@ exports.getUser = async (req: Request, res: Response): Promise<User[]> => {
     return user;
   } catch (err) {
     res.status(400).json(err);
-    throw new Error(`Cannot get a user ${err}`);
+    console.log(err);
   }
 };
 
-exports.deleteUser = async (req: Request, res: Response): Promise<User[]> => {
-  const user_id = req.params.id;
+exports.deleteMe = async (_req: Request, res: Response) => {
   try {
+    const currentUser = res.locals.user;
+    const user_id = currentUser.user_id;
     const conn = await client.connect();
     const sql = `DELETE FROM users WHERE user_id=($1)`;
     const result = await conn.query(sql, [user_id]);
-    const deletedUser = result.rows;
+    const deletedUser = result.rows[0];
     conn.release();
-    console.log(deletedUser);
     res.status(204).json({
       status: 'success',
       data: {
@@ -102,22 +70,7 @@ exports.deleteUser = async (req: Request, res: Response): Promise<User[]> => {
     });
     return deletedUser;
   } catch (err) {
-    throw new Error(`Cannot delete the user(user_id: ${user_id}) ${err}`);
+    res.status(400).json(err);
+    console.log(err);
   }
 };
-
-// exports.authenticate=async(username: string, password: string): Promise<User | null> {
-//   const conn = await client.connect()
-//   const sql = 'SELECT password_digest FROM users WHERE username=($1)'
-//   const result = await conn.query(sql, [username])
-//   console.log(password+pepper)
-
-//   if(result.rows.length) {
-//     const user = result.rows[0]
-//     console.log(user)
-//     if (bcrypt.compareSync(password+pepper, user.password_digest)) {
-//       return user
-//     }
-//   }
-//   return null
-// }

@@ -4,56 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
-exports.getAllProducts = async (_req, res) => {
+exports.getAllProducts = async (req, res) => {
+    const category = req.query.category;
     try {
+        let result;
         const conn = await database_1.default.connect();
-        const sql = 'SELECT * FROM products';
-        const result = await conn.query(sql);
-        const products = result.rows;
+        if (!category) {
+            const sql = 'SELECT * FROM products';
+            result = await conn.query(sql);
+        }
+        else {
+            const sql = 'SELECT * FROM products WHERE category=($1)';
+            result = await conn.query(sql, [category]);
+        }
         conn.release();
-        // console.log(products);
         res.status(200).json({
             status: 'success',
-            results: products.length,
+            results: result.rows.length,
             data: {
-                products,
+                products: result.rows,
             },
         });
-        return products;
+        return result.rows;
     }
     catch (err) {
-        res.status(400).json(err);
-        throw new Error(`Cannot get all products ${err}`);
-    }
-};
-// Return, console.log product_id
-exports.createProduct = async (req, res) => {
-    const newProduct = {
-        name: req.body.name,
-        price: req.body.price,
-        category: req.body.category,
-    };
-    try {
-        const conn = await database_1.default.connect();
-        const sql = `INSERT INTO products (name, price, category) VALUES ($1, $2, $3)`;
-        await conn.query(sql, [
-            newProduct.name,
-            newProduct.price,
-            newProduct.category,
-        ]);
-        conn.release();
-        console.log(newProduct);
-        res.status(201).json({
-            status: 'success',
-            data: {
-                newProduct,
-            },
-        });
-        return newProduct;
-    }
-    catch (err) {
-        res.status(400).json(err);
-        throw new Error(`Cannot create a product ${err}`);
+        res.status(404).json({ status: 'fail', message: err });
     }
 };
 exports.getProduct = async (req, res) => {
@@ -62,40 +37,108 @@ exports.getProduct = async (req, res) => {
         const conn = await database_1.default.connect();
         const sql = `SELECT * FROM products WHERE product_id=($1)`;
         const result = await conn.query(sql, [product_id]);
-        const product = result.rows;
         conn.release();
-        // console.log(product);
         res.status(200).json({
             status: 'success',
             data: {
-                product,
+                product: result.rows[0],
             },
         });
-        return product;
+        return result.rows[0];
+    }
+    catch (err) {
+        res.status(404).json({ status: 'fssssail', message: err });
+    }
+};
+exports.createProduct = async (req, res) => {
+    const { name, price, category } = req.body;
+    try {
+        const conn = await database_1.default.connect();
+        const sql = `INSERT INTO products (name, price, category) VALUES ($1, $2, $3) RETURNING *`;
+        const result = await conn.query(sql, [name, price, category]);
+        conn.release();
+        res.status(201).json({
+            status: 'success',
+            data: {
+                product: result.rows[0],
+            },
+        });
+        return result.rows[0];
+    }
+    catch (err) {
+        res.status(404).json({ status: 'fail', message: err });
+    }
+};
+exports.updateProduct = async (req, res) => {
+    const { name, price, category } = req.body;
+    const product_id = req.params.id;
+    req.body;
+    try {
+        const conn = await database_1.default.connect();
+        const sql = 'UPDATE products SET name=($1), price=($2), category=($3) WHERE product_id=($4) RETURNING *';
+        const result = await conn.query(sql, [name, price, category, product_id]);
+        conn.release();
+        res.status(200).json({
+            status: 'success',
+            data: {
+                product: result.rows[0],
+            },
+        });
+        return result.rows[0];
     }
     catch (err) {
         res.status(400).json(err);
-        throw new Error(`Cannot get a product ${err}`);
+        console.log;
     }
 };
 exports.deleteProduct = async (req, res) => {
     const product_id = req.params.id;
     try {
         const conn = await database_1.default.connect();
-        const sql = `DELETE FROM products WHERE product_id=($1)`;
+        const sql = `DELETE FROM products WHERE product_id=($1) RETURNING *`;
         const result = await conn.query(sql, [product_id]);
-        const deletedProduct = result.rows;
+        const deletedProduct = result.rows[0];
         conn.release();
-        console.log(deletedProduct);
         res.status(204).json({
             status: 'success',
-            data: {
-                data: deletedProduct,
-            },
+            data: null,
         });
         return deletedProduct;
     }
     catch (err) {
-        throw new Error(`Cannot delete the product(product_id: ${product_id}) ${err}`);
+        res.status(400).json(err);
+        console.log(err);
+    }
+};
+exports.getTop5Popular = async (req, res) => {
+    try {
+        const conn = await database_1.default.connect();
+        const sql = `
+      SELECT 
+        orders.product_id,
+        products.name,
+        SUM(orders.quantity) sales
+      FROM
+        orders
+      INNER JOIN products
+      ON orders.product_id = products.product_id
+      GROUP BY orders.product_id, products.name
+      ORDER BY sales DESC
+      LIMIT 5
+      ;
+    `;
+        const result = await conn.query(sql);
+        conn.release();
+        res.status(200).json({
+            status: 'success',
+            results: result.rows.length,
+            data: {
+                products: result.rows,
+            },
+        });
+        return result.rows;
+    }
+    catch (err) {
+        res.status(404).json({ status: 'fail', message: err });
     }
 };
