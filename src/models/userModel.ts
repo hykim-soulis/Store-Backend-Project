@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
-const bcrypt = require('bcrypt');
 import client from '../database';
-import { isParameterPropertyDeclaration } from 'typescript';
 
-type User = {
+export type User = {
   user_id?: Number;
   first_name: string;
   last_name: string;
+  email: string;
   password: string;
 };
 
@@ -32,37 +31,37 @@ exports.getAllUsers = async (_req: Request, res: Response): Promise<User[]> => {
   }
 };
 
-// Return, console.log user_id
-exports.createUser = async (req: Request, res: Response): Promise<User> => {
-  const newUser: User = {
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    password: req.body.password,
-  };
-  try {
-    const conn = await client.connect();
-    const sql = `INSERT INTO users (first_name, last_name, password_digest) VALUES ($1, $2, $3)`;
-    const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds));
+// // Return, console.log user_id
+// exports.createUser = async (req: Request, res: Response): Promise<User> => {
+//   const newUser: User = {
+//     first_name: req.body.first_name,
+//     last_name: req.body.last_name,
+//     password: req.body.password,
+//   };
+//   try {
+//     const conn = await client.connect();
+//     const sql = `INSERT INTO users (first_name, last_name, password_digest) VALUES ($1, $2, $3)`;
+//     const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds));
 
-    const result = await conn.query(sql, [
-      newUser.first_name,
-      newUser.last_name,
-      hash,
-    ]);
-    conn.release();
-    console.log(result.rows[0]);
-    res.status(201).json({
-      status: 'success',
-      data: {
-        newUser,
-      },
-    });
-    return newUser;
-  } catch (err) {
-    res.status(400).json(err);
-    throw new Error(`Cannot create a user ${err}`);
-  }
-};
+//     const result = await conn.query(sql, [
+//       newUser.first_name,
+//       newUser.last_name,
+//       hash,
+//     ]);
+//     conn.release();
+//     console.log(result.rows[0]);
+//     res.status(201).json({
+//       status: 'success',
+//       data: {
+//         newUser,
+//       },
+//     });
+//     return newUser;
+//   } catch (err) {
+//     res.status(400).json(err);
+//     throw new Error(`Cannot create a user ${err}`);
+//   }
+// };
 
 exports.getUser = async (req: Request, res: Response): Promise<User[]> => {
   const user_id = req.params.id;
@@ -107,18 +106,18 @@ exports.deleteUser = async (req: Request, res: Response): Promise<User[]> => {
   }
 };
 
-exports.authenticate=async(username: string, password: string): Promise<User | null> {
-  const conn = await client.connect()
-  const sql = 'SELECT password_digest FROM users WHERE username=($1)'
-  const result = await conn.query(sql, [username])
-  console.log(password+pepper)
+// exports.authenticate=async(username: string, password: string): Promise<User | null> {
+//   const conn = await client.connect()
+//   const sql = 'SELECT password_digest FROM users WHERE username=($1)'
+//   const result = await conn.query(sql, [username])
+//   console.log(password+pepper)
 
-  if(result.rows.length) {
-    const user = result.rows[0]
-    console.log(user)
-    if (bcrypt.compareSync(password+pepper, user.password_digest)) {
-      return user
-    }
-  }
-  return null
-}
+//   if(result.rows.length) {
+//     const user = result.rows[0]
+//     console.log(user)
+//     if (bcrypt.compareSync(password+pepper, user.password_digest)) {
+//       return user
+//     }
+//   }
+//   return null
+// }

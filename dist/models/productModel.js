@@ -4,9 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = __importDefault(require("../database"));
-exports.sum = (a, b) => {
-    return a + b;
-};
 exports.getAllProducts = async (_req, res) => {
     try {
         const conn = await database_1.default.connect();

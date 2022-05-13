@@ -12,8 +12,6 @@ const {
   ENV,
 } = process.env;
 
-console.log(ENV);
-
 const client = new Pool({
   host: POSTGRES_HOST,
   database: ENV === 'dev' ? POSTGRES_DB : POSTGRES_TEST_DB,

@@ -1,16 +1,18 @@
 import express from 'express';
 const productModel = require('../models/productModel');
+const authModel = require('../models/authModel');
 
 const router = express.Router();
 
 router
   .route('/')
   .get(productModel.getAllProducts)
-  .post(productModel.createProduct);
+  .post(authModel.protect, productModel.createProduct);
+
 router
   .route('/:id')
   .get(productModel.getProduct)
-  .delete(productModel.deleteProduct);
-// router.route('/:id').put(productModel.updateProduct);
+  .delete(productModel.deleteProduct)
+  .put(productModel.updateProduct);
 
 module.exports = router;
