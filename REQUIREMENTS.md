@@ -6,6 +6,8 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 
+To test the endpoints, use the below body.
+
 #### Login
 
 To test token required endpoints, login first.
@@ -15,21 +17,58 @@ To test token required endpoints, login first.
 - Index ('/product/', getAllProducts)
 - Show ('/product/:id', getProduct)
 - Create [token required] ('/product/', protect, createProduct)
+
+```
+  { "name": "cup", "price": 15, "category": "kitchen" }
+  { "name": "fork", "price": 21, "category": "kitchen" }
+  { "name": "shampoo", "price": 8, "category": "bathroom" }
+  { "name": "toothpaste", "price": 6, "category": "bathroom" }
+  { "name": "book", "price": 12, "category": "office" }
+  { "name": "note", "price": 4, "category": "office" }
+```
+
 - Delete [token required] ('/product/:id', protect, deleteProduct)
 - Update [token required] ('/product/:id', protect, updateProduct)
+
+```
+{ "name": "toothpaste", "price": 13, "category": "bathroom" }
+```
+
 - Top 5 most popular products ('/top-5-popular', getTop5Popular)
-- Products by category (args: product category) ('/product?category=<category>', getAllProducts)
+- Products by category (args: product category) ('/product?category=kitchen', getAllProducts)
 
 #### Users
 
 - Index [token required] ('/user/', protect, getAllUsers)
 - Show [token required] ('/user/:id', protect, getAllUsers)
 - Create ('/user/signup', signup)
+
+```
+  { "first_name": "John", "last_name": "Smith", "email": "test@test.com", "password": "test1234" }
+```
+
 - Login ('/user/login', login)
+
+```
+  { "email": "test@test.com", "password": "test1234" }
+```
 
 #### Orders
 
 - Create order for logged in current user [token required] ('/order', protect, createOrder)
+
+```
+  { "product_id": <product_id>, "quantity": 5, "status": "active" }
+  { "product_id": <product_id>, "quantity": 4, "status": "active" }
+  { "product_id": <product_id>, "quantity": 7, "status": "active" }
+  { "product_id": <product_id>, "quantity": 2, "status": "active" }
+  { "product_id": <product_id>, "quantity": 8, "status": "active" }
+  { "product_id": <product_id>, "quantity": 3, "status": "active" }
+  { "product_id": <product_id>, "quantity": 1, "status": "completed" }
+  { "product_id": <product_id>, "quantity": 2, "status": "completed" }
+  { "product_id": <product_id>, "quantity": 11, "status": "completed" }
+```
+
 - Index [token required] for logged in current user ('/order', protect, getAllProducts)
 - Index [token required] Completed Orders by user ('/order?status=completed', protect, getAllProducts)
 - Index [token required] Active Orders by user ('/order?status=active', protect, getAllProducts)

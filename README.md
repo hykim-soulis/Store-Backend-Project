@@ -9,7 +9,7 @@ You can find the data shape of the database, table and endpoints from requiremen
 1. Clone the repository
 2. npm install
 3. find config.env content from the below information
-4. setup your Postgres database and create tables by db-migrate up command
+4. setup your Postgres database, connect and create tables by db-migrate up command
 5. npm run start
 
 ## Required Technologies
