@@ -7,10 +7,13 @@ You can find the data shape of the database, table and endpoints from requiremen
 ## Installation and Startup
 
 1. Clone the repository
-2. npm install
-3. find config.env content from the below information
-4. setup your Postgres database, connect and create tables by db-migrate up command
-5. npm run start
+2. Run "npm install"
+3. Create config.env file at root and copy and paste the information from below config.env section
+4. Create "store_backend_dev" and "store_backend_test" database
+5. Create "project_user" with password "project456" and grant all privileges
+6. Connect with "store_backend_dev" database and create tables using "db-migrate up" command
+7. Run "npm run start"
+8. See REQUIREMENTS.MD file for data shapes and endpoints
 
 ## Required Technologies
 
@@ -34,9 +37,7 @@ POSTGRES_USER=project_user
 POSTGRES_PASSWORD=project456
 ENV=dev
 PORT=8000
-
 BCRYPT_PASSWORD=my-secret-password-protector-private-key
 SALT_ROUNDS=10
-
 JWT_SECRET=my-secret-password-protector-private-key
 JWT_EXPIRES_IN=90d
