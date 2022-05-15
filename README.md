@@ -30,6 +30,7 @@ My application use the following libraries:
 
 My config.env file is not in this repository but I provided the dotenv content below for Udacity project reviewers to review this project.
 
+```
 POSTGRES_HOST=127.0.0.1
 POSTGRES_DB=store_backend_dev
 POSTGRES_TEST_DB=store_backend_test
@@ -41,3 +42,4 @@ BCRYPT_PASSWORD=my-secret-password-protector-private-key
 SALT_ROUNDS=10
 JWT_SECRET=my-secret-password-protector-private-key
 JWT_EXPIRES_IN=90d
+```

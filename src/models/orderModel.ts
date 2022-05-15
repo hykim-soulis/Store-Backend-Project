@@ -17,7 +17,7 @@ exports.getAllOrders = async (req: Request, res: Response) => {
   try {
     let result;
     const conn = await client.connect();
-    if (status && status === ('active' || 'completed')) {
+    if (status) {
       const sql = `SELECT * FROM orders WHERE user_id=($1) AND status=($2)`;
       result = await conn.query(sql, [user_id, status]);
     } else {
