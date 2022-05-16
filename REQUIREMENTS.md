@@ -41,7 +41,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 | GET    | /order/:id           | getOrder     | JWT token, id-number(params)   | none                                                                  |
 | POST   | /order               | createOrder  | JWT token                      | { "status": "active" }                                                |
 | PUT    | /order/:id           | updateOrder  | JWT token, id-number(params)   | { "status": "completed" }                                             |
-| DELETE | /order/:id           | deleteOrder  | JWT token, id-number(params)   |                                                                       |
+| DELETE | /order/:id           | deleteOrder  | JWT token, id-number(params)   | none                                                                  |
 | POST   | /order/:id/products  | addProducts  | JWT token, id-number(params)   | { "quantity": 5, "product_id": <product_id>, "order_id": <order_id> } |
 
 ## Data Schema
