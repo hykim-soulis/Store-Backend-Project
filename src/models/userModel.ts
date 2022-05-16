@@ -16,7 +16,7 @@ exports.getAllUsers = async (_req: Request, res: Response) => {
     const result = await conn.query(sql);
     const users = result.rows;
     conn.release();
-    console.log(result.rows);
+    // console.log(result.rows);
     res.status(200).json({
       status: 'success',
       results: users.length,
@@ -37,9 +37,9 @@ exports.getUser = async (req: Request, res: Response) => {
     const conn = await client.connect();
     const sql = `SELECT * FROM users WHERE user_id=($1)`;
     const result = await conn.query(sql, [user_id]);
-    const user = result.rows;
+    const user = result.rows[0];
     conn.release();
-    console.log(result.rows);
+    // console.log(result.rows);
     res.status(200).json({
       status: 'success',
       data: {

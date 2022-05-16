@@ -10,7 +10,9 @@ const router = express_1.default.Router();
 router
     .route('/')
     .get(authModel.protect, orderModel.getAllOrders)
-    .post(authModel.protect, orderModel.createOrder)
-    .put(authModel.protect, orderModel.updateOrder);
-router.route('/:id').delete(authModel.protect, orderModel.deleteOrder);
+    .post(authModel.protect, orderModel.createOrder);
+router
+    .route('/:id')
+    .put(authModel.protect, orderModel.updateOrder)
+    .delete(authModel.protect, orderModel.deleteOrder);
 module.exports = router;

@@ -10,6 +10,7 @@ router
   .delete(authModel.protect, userModel.deleteMe);
 
 router.route('/:id').get(authModel.protect, userModel.getUser);
+
 router.route('/signup').post(authModel.signup);
 router.route('/login').post(authModel.login);
 

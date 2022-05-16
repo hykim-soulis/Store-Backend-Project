@@ -13,7 +13,7 @@ exports.getAllOrders = async (req: Request, res: Response) => {
   const status = req.query.status;
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
-  console.log(user_id, status);
+
   try {
     let result;
     const conn = await client.connect();
@@ -118,7 +118,7 @@ exports.updateOrder = async (req: Request, res: Response) => {
   try {
     const conn = await client.connect();
     const sql =
-      'UPDATE orders SET product_id=($1), quantity=($2), status=($3) WHERE order_id=($4) AND user_id=($5), RETURNING *';
+      'UPDATE orders SET product_id=($1), quantity=($2), status=($3) WHERE order_id=($4) AND user_id=($5) RETURNING *';
     const result = await conn.query(sql, [
       product_id,
       quantity,

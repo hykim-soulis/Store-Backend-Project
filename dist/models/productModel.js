@@ -47,7 +47,7 @@ exports.getProduct = async (req, res) => {
         return result.rows[0];
     }
     catch (err) {
-        res.status(404).json({ status: 'fssssail', message: err });
+        res.status(404).json({ status: 'fail', message: err });
     }
 };
 exports.createProduct = async (req, res) => {

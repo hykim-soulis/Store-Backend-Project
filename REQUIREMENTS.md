@@ -56,6 +56,7 @@ To test token required endpoints, login first.
 #### Orders
 
 - Create order for logged in current user [token required] ('/order', protect, createOrder)
+- Update <product_id> when you use below sample orders
 
 ```
   { "product_id": <product_id>, "quantity": 5, "status": "active" }
