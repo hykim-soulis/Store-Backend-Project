@@ -66,7 +66,7 @@ To test token required endpoints, login first.
 - Update [token required] (PUT /order/:id, protect, updateOrder)
 
 ```
-  {  }
+  { "status": "completed" }
 ```
 
 - Delete [token required] (DELETE /order/:id, protect, deleteOrder)
