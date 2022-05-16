@@ -6,127 +6,102 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 
-To test the endpoints, use the below bodies in the code blocks.
-Update <product_id> and <order_id> to integer product_id and order_id corresponding to your creation.
-
-#### Login
-
-To test token required endpoints, login first.
+- To test end point, use sample JSON bodies.
+- Update <product_id> and <order_id> to real number product_id and order_id
+- To test token required endpoints, login first.
 
 #### Users
 
-- Index [token required] (GET /user, protect, getAllUsers)
-- Show [token required] (GET /user/:id, protect, getUser)
-- Delete logged in user [token required] (DELETE /user, protect, deleteMe)
-
-- Create (POST /user/signup, signup)
-
-```
-  { "first_name": "John", "last_name": "Smith", "email": "test@test.com", "password": "test1234" }
-```
-
-- Login (POST /user/login, login)
-
-```
-  { "email": "test@test.com", "password": "test1234" }
-```
+| Method | API Endpoint | Model       | Parameter or Query           | Sample JSON body                                                                                 |
+| ------ | ------------ | ----------- | ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| GET    | /user        | getAllUsers | JWT token                    | none                                                                                             |
+| GET    | /user/:id    | getUser     | JWT token, id-number(params) | none                                                                                             |
+| DELETE | /user        | deleteMe    | JWT token                    | none                                                                                             |
+| POST   | /user/signup | signup      | none                         | { "first_name": "John", "last_name": "Smith", "email": "test@test.com", "password": "test1234" } |
+| POST   | /user/login  | login       | none                         | {"email": "test@test.com", "password": "test1234" }                                              |
 
 #### Products
 
-- Index (GET /product, getAllProducts)
-- Products by category (args: product category) (GET /product?category=kitchen, getAllProducts)
-- Show (GET /product/:id, getProduct)
-
-- Create [token required] (POST /product, protect, createProduct)
-- Delete [token required] (DELETE /product/:id, protect, deleteProduct)
-- Update [token required] (PUT /product/:id, protect, updateProduct)
-
-```
-  { "name": "cup", "price": 15, "category": "kitchen" }
-  { "name": "fork", "price": 21, "category": "kitchen" }
-  { "name": "shampoo", "price": 8, "category": "bathroom" }
-  { "name": "toothpaste", "price": 6, "category": "bathroom" }
-  { "name": "book", "price": 12, "category": "office" }
-  { "name": "note", "price": 4, "category": "office" }
-```
+| Method | API Endpoint              | Model          | Parameter or Query           | Sample JSON body                                      |
+| ------ | ------------------------- | -------------- | ---------------------------- | ----------------------------------------------------- |
+| GET    | /product                  | getAllProducts |                              | none                                                  |
+| GET    | /product?category=kitchen | getAllProducts | category-string(query)       | none                                                  |
+| GET    | /product/:id              | getProduct     | id-number(params)            | none                                                  |
+| POST   | /product                  | createProduct  | JWT token                    | { "name": "cup", "price": 15, "category": "kitchen" } |
+| DELETE | /product/:id              | deleteProduct  | JWT token, id-number(params) | none                                                  |
+| PUT    | /product/:id              | updateProduct  | JWT token, id-number(params) | { "name": "cup", "price": 30, "category": "kitchen" } |
+| GET    | /top-5-popular            | getTop5Popular | none                         | none                                                  |
 
 #### Orders
 
-- Index [token required] for logged in current user (GET /order, protect, getAllOrders)
-- Index [token required] Active Orders by current user (GET /order?status=active, protect, getAllOrders)
-- Index [token required] Completed Orders by current user (GET /order?status=completed, protect, getAllOrders)
-- Show [token required] for logged in current user (GET /order/:id, protect, getOrder)
-
-- Create order for logged in current user [token required] (POST /order, protect, createOrder)
-
-```
-  { "status": "active" }
-```
-
-- Update [token required] (PUT /order/:id, protect, updateOrder)
-
-```
-  { "status": "completed" }
-```
-
-- Delete [token required] (DELETE /order/:id, protect, deleteOrder)
-
-#### Add Products
-
-- Insert products to the existing order for logged in current user [token required] (POST /order/:id/products, protect, addProducts)
-
-```
-  { "quantity": 5, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 4, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 7, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 2, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 8, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 3, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 1, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 2, "product_id": <product_id>, "order_id": <order_id> }
-  { "quantity": 11, "product_id": <product_id>, "order_id": <order_id> }
-```
-
-#### Top 5 popular products
-
-- Top 5 most popular products (GET /top-5-popular, getTop5Popular)
+| Method | API Endpoint         | Model        | Parameter or Query)            | Sample JSON body                                                      |
+| ------ | -------------------- | ------------ | ------------------------------ | --------------------------------------------------------------------- |
+| GET    | /order               | getAllOrders | JWT token                      | none                                                                  |
+| GET    | /order?status=active | getAllOrders | JWT token,status-string(query) | none                                                                  |
+| GET    | /order/:id           | getOrder     | JWT token, id-number(params)   | none                                                                  |
+| POST   | /order               | createOrder  | JWT token                      | { "status": "active" }                                                |
+| PUT    | /order/:id           | updateOrder  | JWT token, id-number(params)   | { "status": "completed" }                                             |
+| DELETE | /order/:id           | deleteOrder  | JWT token, id-number(params)   |                                                                       |
+| POST   | /order/:id/products  | addProducts  | JWT token, id-number(params)   | { "quantity": 5, "product_id": <product_id>, "order_id": <order_id> } |
 
 ## Data Schema
 
 #### products
 
-Column | Type | Collation | Nullable | Default
-------------+------------------------+-----------+----------+----------------------------------------------
-product_id | integer | | not null | nextval('products_product_id_seq'::regclass)
-name | character varying(100) | | not null |
-price | integer | | not null |
-category | character varying(100) | | not null |
+| Column     | Type                   | Collation | Nullable | Default                                      |
+| ---------- | ---------------------- | --------- | -------- | -------------------------------------------- |
+| product_id | integer                |           | not null | nextval('products_product_id_seq'::regclass) |
+| name       | character varying(100) |           | not null |                                              |
+| price      | integer                |           | not null |                                              |
+| category   | character varying(100) |           | not null |                                              |
 
-- Indexes: "products_pkey" PRIMARY KEY, btree (product_id)
-- Referenced by: TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
-
-- product_id
-- name
-- price
-- category
+- Indexes:
+  "products_pkey" PRIMARY KEY, btree (product_id)
+- Referenced by:
+  TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
 
 #### users
 
-- user_id (serial primary key)
-- first_name ()
-- last_name
-- email
-- password
+| Column          | Type                   | Collation | Nullable | Default                                |
+| --------------- | ---------------------- | --------- | -------- | -------------------------------------- |
+| user_id         | integer                |           | not null | nextval('users_user_id_seq'::regclass) |
+| first_name      | character varying(50)  |           | not null |                                        |
+| last_name       | character varying(16)  |           | not null |                                        |
+| email           | character varying(100) |           | not null |                                        |
+| password_digest | character varying      |           | not null |                                        |
+
+- Indexes:
+  "users_pkey" PRIMARY KEY, btree (user_id)
+  "users_email_key" UNIQUE CONSTRAINT, btree (email)
+- Referenced by:
+  TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
 
 #### orders
 
-- order_id
-- status of order (active or complete)
-- user_id (from users table)
+| Column   | Type                  | Collation | Nullable | Default                                  |
+| -------- | --------------------- | --------- | -------- | ---------------------------------------- |
+| order_id | integer               |           | not null | nextval('orders_order_id_seq'::regclass) |
+| status   | character varying(15) |           | not null |                                          |
+| user_id  | integer               |           | not null |                                          |
+
+- Indexes:
+  "orders_pkey" PRIMARY KEY, btree (order_id)
+- Foreign-key constraints:
+  "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
+- Referenced by:
+  TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
 
 #### order_products
 
-- order_products_id
-- quantity of each product in the order
-- product_id (from products table)
-- order_id (from orders table)
+| Column            | Type    | Collation | Nullable | Default                                                   |
+| ----------------- | ------- | --------- | -------- | --------------------------------------------------------- |
+| order_products_id | integer |           | not null | nextval('order_products_order_products_id_seq'::regclass) |
+| quantity          | integer |           | not null |                                                           |
+| product_id        | integer |           | not null |                                                           |
+| order_id          | integer |           | not null |                                                           |
+
+- Indexes:
+  "order_products_pkey" PRIMARY KEY, btree (order_products_id)
+- Foreign-key constraints:
+  "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
+  "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
