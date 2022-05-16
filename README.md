@@ -13,7 +13,8 @@ You can find the data shape of the database, table and endpoints from requiremen
 5. Create "project_user" with password "project456" and grant all privileges
 6. Connect with "store_backend_dev" database and create tables using "db-migrate up" command
 7. Run "npm run start"
-8. See REQUIREMENTS.MD file for data shapes and endpoints
+8. To test jasmine, run "npm run test"
+9. See REQUIREMENTS.MD file for data shapes and endpoints
 
 ## Required Technologies
 
