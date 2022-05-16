@@ -37,16 +37,11 @@ exports.getAllOrders = async (req, res) => {
 exports.createOrder = async (req, res) => {
     const currentUser = res.locals.user;
     const user_id = currentUser.user_id;
-    const { product_id, quantity, status } = req.body;
+    const { status } = req.body;
     try {
         const conn = await database_1.default.connect();
-        const sql = `INSERT INTO orders (product_id, quantity, user_id, status) VALUES ($1, $2, $3, $4) RETURNING *`;
-        const result = await conn.query(sql, [
-            product_id,
-            quantity,
-            user_id,
-            status,
-        ]);
+        const sql = `INSERT INTO orders (status, user_id) VALUES ($1, $2) RETURNING *`;
+        const result = await conn.query(sql, [status, user_id]);
         conn.release();
         res.status(201).json({
             status: 'success',
@@ -61,28 +56,29 @@ exports.createOrder = async (req, res) => {
         console.error(err);
     }
 };
-// exports.getOrder = async (req: Request, res: Response) => {
-//   const currentUser = res.locals.user;
-//   const user_id = currentUser.user_id;
-//   const order_id = req.params.id;
-//   try {
-//     const conn = await client.connect();
-//     const sql = `SELECT * FROM orders WHERE order_id=($1) AND user_id=($2)`;
-//     const result = await conn.query(sql, [order_id, user_id]);
-//     conn.release();
-//     // console.log(order);
-//     res.status(200).json({
-//       status: 'success',
-//       data: {
-//         order: result.rows[0],
-//       },
-//     });
-//     return result.rows[0];
-//   } catch (err) {
-//     res.status(400).json(err);
-//     throw new Error(`Cannot get an order ${err}`);
-//   }
-// };
+exports.getOrder = async (req, res) => {
+    const currentUser = res.locals.user;
+    const user_id = currentUser.user_id;
+    const order_id = req.params.id;
+    try {
+        const conn = await database_1.default.connect();
+        const sql = `SELECT * FROM orders WHERE order_id=($1) AND user_id=($2)`;
+        const result = await conn.query(sql, [order_id, user_id]);
+        conn.release();
+        // console.log(order);
+        res.status(200).json({
+            status: 'success',
+            data: {
+                order: result.rows[0],
+            },
+        });
+        return result.rows[0];
+    }
+    catch (err) {
+        res.status(400).json(err);
+        throw new Error(`Cannot get an order ${err}`);
+    }
+};
 exports.deleteOrder = async (req, res) => {
     const currentUser = res.locals.user;
     const user_id = currentUser.user_id;
@@ -105,22 +101,37 @@ exports.deleteOrder = async (req, res) => {
     }
 };
 exports.updateOrder = async (req, res) => {
-    const { product_id, quantity, status } = req.body;
+    const { status } = req.body;
     const order_id = req.params.id;
     const currentUser = res.locals.user;
     const user_id = currentUser.user_id;
     try {
         const conn = await database_1.default.connect();
-        const sql = 'UPDATE orders SET product_id=($1), quantity=($2), status=($3) WHERE order_id=($4) AND user_id=($5) RETURNING *';
-        const result = await conn.query(sql, [
-            product_id,
-            quantity,
-            status,
-            order_id,
-            user_id,
-        ]);
+        const sql = 'UPDATE orders SET status=($1) WHERE order_id=($2) AND user_id=($3) RETURNING *';
+        const result = await conn.query(sql, [status, order_id, user_id]);
         conn.release();
         res.status(200).json({
+            status: 'success',
+            data: {
+                order: result.rows[0],
+            },
+        });
+        return result.rows[0];
+    }
+    catch (err) {
+        res.status(400).json(err);
+        console.error(err);
+    }
+};
+exports.addProducts = async (req, res) => {
+    const order_id = req.params.id;
+    const { quantity, product_id } = req.body;
+    try {
+        const conn = await database_1.default.connect();
+        const sql = 'INSERT INTO order_products (quantity, product_id, order_id) VALUES ($1, $2, $3) RETURNING *';
+        const result = await conn.query(sql, [quantity, product_id, order_id]);
+        conn.release();
+        res.status(201).json({
             status: 'success',
             data: {
                 order: result.rows[0],

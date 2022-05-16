@@ -13,6 +13,8 @@ router
     .post(authModel.protect, orderModel.createOrder);
 router
     .route('/:id')
+    .get(authModel.protect, orderModel.getOrder)
     .put(authModel.protect, orderModel.updateOrder)
     .delete(authModel.protect, orderModel.deleteOrder);
+router.route('/:id/products').post(authModel.protect, orderModel.addProducts);
 module.exports = router;

@@ -119,14 +119,14 @@ exports.getTop5Popular = async (req: Request, res: Response) => {
     const conn = await client.connect();
     const sql = `
       SELECT 
-        orders.product_id,
+        order_products.product_id,
         products.name,
-        SUM(orders.quantity) sales
+        SUM(order_products.quantity) sales
       FROM
-        orders
+        order_products
       INNER JOIN products
-      ON orders.product_id = products.product_id
-      GROUP BY orders.product_id, products.name
+      ON order_products.product_id = products.product_id
+      GROUP BY order_products.product_id, products.name
       ORDER BY sales DESC
       LIMIT 5
       ;

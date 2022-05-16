@@ -10,10 +10,10 @@ You can find the data shape of the database, table and endpoints from requiremen
 2. Run "npm install"
 3. Create config.env file at root and copy and paste the information from below config.env section
 4. Create "store_backend_dev" and "store_backend_test" database
-5. Create "project_user" with password "project456" and grant all privileges
+5. Create "project_user" with password "project456" and grant all privileges to both databases
 6. Connect with "store_backend_dev" database and create tables using "db-migrate up" command
-7. Run "npm run start"
-8. To test jasmine, run "npm run test"
+7. To test jasmine, run "npm run test"
+8. To test with postman, run "npm run start"
 9. See REQUIREMENTS.MD file for data shapes and endpoints
 
 ## Required Technologies

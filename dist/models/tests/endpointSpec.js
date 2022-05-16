@@ -21,16 +21,16 @@ const sampleProducts = [
     { name: 'toothpaste', price: 6, category: 'bathroom' },
     { name: 'book', price: 12, category: 'office' },
 ];
-const sampleOrders = [
-    { product_id: 1, quantity: 5, status: 'active' },
-    { product_id: 2, quantity: 4, status: 'active' },
-    { product_id: 3, quantity: 7, status: 'active' },
-    { product_id: 4, quantity: 2, status: 'active' },
-    { product_id: 5, quantity: 8, status: 'active' },
-    { product_id: 1, quantity: 3, status: 'active' },
-    { product_id: 2, quantity: 1, status: 'completed' },
-    { product_id: 3, quantity: 2, status: 'completed' },
-    { product_id: 4, quantity: 11, status: 'completed' },
+const sampleOrderProducts = [
+    { quantity: 5, product_id: 1 },
+    { quantity: 4, product_id: 2 },
+    { quantity: 7, product_id: 3 },
+    { quantity: 2, product_id: 4 },
+    { quantity: 8, product_id: 5 },
+    { quantity: 3, product_id: 1 },
+    { quantity: 1, product_id: 2 },
+    { quantity: 2, product_id: 3 },
+    { quantity: 11, product_id: 4 },
 ];
 beforeAll(async () => {
     // Signup new User
@@ -51,13 +51,12 @@ beforeAll(async () => {
         .set('Accept', 'application/json')
         .set('Authorization', `Bearer ${orderToken}`));
     await Promise.all(productPostPromise);
-    // Post sample orders
-    const orderPostPromise = sampleOrders.map(async (el) => await request
+    // Post a sample completed order
+    await request
         .post('/order')
-        .send(el)
+        .send({ status: 'active' })
         .set('Accept', 'application/json')
-        .set('Authorization', `Bearer ${orderToken}`));
-    await Promise.all(orderPostPromise);
+        .set('Authorization', `Bearer ${orderToken}`);
 });
 describe('Route endpoint tests', () => {
     describe('Testing product Model endpoints', () => {
@@ -108,34 +107,42 @@ describe('Route endpoint tests', () => {
         it('POST /order posts a new order', async () => {
             const response = await request
                 .post('/order')
-                .send({ product_id: 5, quantity: 1, status: 'active' })
+                .send({ status: 'active' })
                 .set('Accept', 'application/json')
                 .set('Authorization', `Bearer ${orderToken}`);
             expect(response.status).toBe(201);
         });
-        it('GET /order shows all 10 orders', async () => {
+        it('POST /order/2/products posts new products to the exsiting order', async () => {
+            const response = await request
+                .post('/order/2/products')
+                .send({ quantity: 11, product_id: 4 })
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${orderToken}`);
+            expect(response.status).toBe(201);
+        });
+        it('GET /order shows all 2 active orders for the logged in user', async () => {
             const response = await request
                 .get('/order')
                 .set('Accept', 'application/json')
                 .set('Authorization', `Bearer ${orderToken}`);
-            expect(response.body.data.orders.length).toBe(10);
+            expect(response.body.data.orders.length).toBe(2);
         });
-        it('GET /order?status=active shows all 7 active orders', async () => {
+        it('PUT /order/1 updates the order status for the logged in user', async () => {
             const response = await request
-                .get('/order?status=active')
-                .set('Accept', 'application/json')
-                .set('Authorization', `Bearer ${orderToken}`);
-            expect(response.body.data.orders.length).toBe(7);
-        });
-        it('PUT /order/10 updates the order status', async () => {
-            const response = await request
-                .put('/order/10')
-                .send({ product_id: 5, quantity: 1, status: 'completed' })
+                .put('/order/1')
+                .send({ status: 'completed' })
                 .set('Accept', 'application/json')
                 .set('Authorization', `Bearer ${orderToken}`);
             expect(response.body.data.order.status).toBe('completed');
         });
-        it('DELETE /order/10 delete the order with id 10', async () => {
+        it('GET /order?status=active shows 1 active order for the logged in user', async () => {
+            const response = await request
+                .get('/order?status=active')
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${orderToken}`);
+            expect(response.body.data.orders.length).toBe(1);
+        });
+        it('DELETE /order/1 deletes the order with id 1', async () => {
             const response = await request
                 .delete('/order/10')
                 .set('Accept', 'application/json')
@@ -145,6 +152,12 @@ describe('Route endpoint tests', () => {
     });
     describe('Testing /top-5-popular endpoints', () => {
         it('GET /top-5-popular shows top 5 popular products', async () => {
+            const orderPostPromise = sampleOrderProducts.map(async (el) => await request
+                .post('/order/2/products')
+                .send(el)
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${orderToken}`));
+            await Promise.all(orderPostPromise);
             const response = await request
                 .get('/top-5-popular')
                 .set('Accept', 'application/json');
