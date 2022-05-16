@@ -91,9 +91,19 @@ To test token required endpoints, login first.
 
 - Top 5 most popular products (GET /top-5-popular, getTop5Popular)
 
-## Data Shapes
+## Data Schema
 
 #### products
+
+Column | Type | Collation | Nullable | Default
+------------+------------------------+-----------+----------+----------------------------------------------
+product_id | integer | | not null | nextval('products_product_id_seq'::regclass)
+name | character varying(100) | | not null |
+price | integer | | not null |
+category | character varying(100) | | not null |
+
+- Indexes: "products_pkey" PRIMARY KEY, btree (product_id)
+- Referenced by: TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
 
 - product_id
 - name
@@ -102,8 +112,8 @@ To test token required endpoints, login first.
 
 #### users
 
-- user_id
-- first_name
+- user_id (serial primary key)
+- first_name ()
 - last_name
 - email
 - password

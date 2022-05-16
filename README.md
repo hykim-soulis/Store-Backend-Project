@@ -9,8 +9,21 @@ You can find the data shape of the database, table and endpoints from requiremen
 1. Clone the repository
 2. Run "npm install"
 3. Create config.env file at root and copy and paste the information from below config.env section
-4. Create "store_backend_dev" and "store_backend_test" database
-5. Create "project_user" with password "project456" and grant all privileges to both databases
+4. Create "store_backend_dev" and "store_backend_test" database via sql query
+
+```
+CREATE DATABASE store_backend_dev;
+CREATE DATABASE store_backend_test;
+```
+
+5. Create "project_user" with password "project456" and grant all privileges to both databases via sql query
+
+```
+CREATE USER project_user WITH PASSWORD 'project456';
+GRANT ALL PRIVILEGES ON DATABASE store_backend_dev TO project_user;
+GRANT ALL PRIVILEGES ON DATABASE store_backend_test TO project_user;
+```
+
 6. Connect with "store_backend_dev" database and create tables using "db-migrate up" command
 7. To test jasmine, run "npm run test"
 8. To test with postman, run "npm run start"
