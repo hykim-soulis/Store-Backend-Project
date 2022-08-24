@@ -1,6 +1,6 @@
 # Storefront Backend Project
 
-The goal of this project is to create a SQL database and tables for the store application, and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from **[API Requirements](# API Requirements)** section below.<br>
+The goal of this project is to create a SQL database and tables for the store application, and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from **API Requirements** section below.<br>
 This is a project for Udacity Full Stack JavaScript Developer Nanodegree Program.
 
 ## Installation and Startup
@@ -78,13 +78,11 @@ JWT_EXPIRES_IN=90d
 
 ## API Requirements
 
-The company stakeholders want to create an online storefront to showcase their great product ideas. Users need to be able to browse an index of all products, see the specifics of a single product, and add products to an order that they can view in a cart page. You have been tasked with building the API that will support this application, and your coworker is building the frontend.
-
-These are the notes from a meeting with the frontend developer that describe what endpoints the API needs to supply, as well as data shapes the frontend and backend have agreed meet the requirements of the application.
+Users need to be able to browse an index of all products, see the specifics of a single product, and add products to an order that they can view in a cart page.
 
 ### API Endpoints
 
-- To test end point, use sample JSON bodies.
+- To test end points, use sample JSON bodies.
 - Update <product_id> and <order_id> to real number product_id and order_id
 - To test token required endpoints, login first.
 
