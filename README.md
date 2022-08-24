@@ -1,6 +1,6 @@
 # Storefront Backend Project
 
-The goal of this project was to create a SQL database, table for a store application and create a RESTful API to be accesible to the frontend developer using typescript. You can find the data shape of the database, table and endpoints from **API Requirements** section below.<br>
+The goal of this project is to create a SQL database and tables for the store application, and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from **[API Requirements](# API Requirements)** section below.<br>
 This is a project for Udacity Full Stack JavaScript Developer Nanodegree Program.
 
 ## Installation and Startup
