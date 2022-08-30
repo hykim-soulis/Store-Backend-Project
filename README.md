@@ -1,6 +1,6 @@
 # Storefront Backend Project
 
-The goal of this project is to create a SQL database and tables for the store application, and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from **API Requirements** section below.<br>
+The goal of this project is to create a SQL database and tables for the store application and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from the **API Requirements** section below.<br>
 This is a project for Udacity Full Stack JavaScript Developer Nanodegree Program.
 
 ## Installation and Startup
@@ -17,7 +17,7 @@ This is a project for Udacity Full Stack JavaScript Developer Nanodegree Program
   npm install
 ```
 
-3. Create config.env file at root and copy and paste the information from below config.env section
+3. Create a config.env file at the root and copy and paste the information from below in the config.env section
 
 4. Create "store_backend_dev" and "store_backend_test" database via sql query
 
@@ -49,7 +49,7 @@ GRANT ALL PRIVILEGES ON DATABASE store_backend_test TO project_user;
 
 ## Required Technologies
 
-My application use the following libraries:
+My application use the following libraries and technologies:
 
 - Postgres for the database
 - Node/Express for the application logic
@@ -60,7 +60,7 @@ My application use the following libraries:
 
 ## config.env
 
-My config.env file is not in this repository but I provided the dotenv content below for Udacity project reviewers to review this project.
+My config.env file is not in this repository but I provided the dotenv content below for anyone reviewing this project.
 
 ```
 POSTGRES_HOST=127.0.0.1
