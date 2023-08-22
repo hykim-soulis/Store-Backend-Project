@@ -6,6 +6,8 @@ type Product = {
   name: string;
   price: Number;
   category: string;
+  img_url: string;
+  description: string;
 };
 
 exports.getAllProducts = async (req: Request, res: Response) => {
@@ -13,7 +15,7 @@ exports.getAllProducts = async (req: Request, res: Response) => {
   try {
     let result;
     const conn = await client.connect();
-    if (!category) {
+    if (!category || category === 'All') {
       const sql = 'SELECT * FROM products';
       result = await conn.query(sql);
     } else {
@@ -54,11 +56,17 @@ exports.getProduct = async (req: Request, res: Response) => {
 };
 
 exports.createProduct = async (req: Request, res: Response) => {
-  const { name, price, category } = req.body;
+  const { name, price, category, img_url, description } = req.body;
   try {
     const conn = await client.connect();
-    const sql = `INSERT INTO products (name, price, category) VALUES ($1, $2, $3) RETURNING *`;
-    const result = await conn.query(sql, [name, price, category]);
+    const sql = `INSERT INTO products (name, price, category, img_url, description) VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+    const result = await conn.query(sql, [
+      name,
+      price,
+      category,
+      img_url,
+      description,
+    ]);
     conn.release();
     res.status(201).json({
       status: 'success',
@@ -73,14 +81,21 @@ exports.createProduct = async (req: Request, res: Response) => {
 };
 
 exports.updateProduct = async (req: Request, res: Response) => {
-  const { name, price, category } = req.body;
+  const { name, price, category, img_url, description } = req.body;
   const product_id = req.params.id;
   req.body;
   try {
     const conn = await client.connect();
     const sql =
-      'UPDATE products SET name=($1), price=($2), category=($3) WHERE product_id=($4) RETURNING *';
-    const result = await conn.query(sql, [name, price, category, product_id]);
+      'UPDATE products SET name=($1), price=($2), category=($3), img_url=($4), description=($5) WHERE product_id=($6) RETURNING *';
+    const result = await conn.query(sql, [
+      name,
+      price,
+      category,
+      img_url,
+      description,
+      product_id,
+    ]);
     conn.release();
     res.status(200).json({
       status: 'success',
@@ -91,7 +106,6 @@ exports.updateProduct = async (req: Request, res: Response) => {
     return result.rows[0];
   } catch (err) {
     res.status(400).json(err);
-    console.log;
   }
 };
 

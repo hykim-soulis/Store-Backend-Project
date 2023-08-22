@@ -16,6 +16,21 @@ router
   .put(authModel.protect, orderModel.updateOrder)
   .delete(authModel.protect, orderModel.deleteOrder);
 
-router.route('/:id/products').post(authModel.protect, orderModel.addProducts);
+router
+  .route('/status/:status')
+  .get(authModel.protect, orderModel.getOrderByStatus);
+
+router.route('/cart').get(authModel.protect, orderModel.getCart);
+
+router
+  .route('/:id/products')
+  .get(authModel.protect, orderModel.getAllOrderProducts)
+  .post(authModel.protect, orderModel.addOrderProduct);
+
+router
+  .route('/:order_id/products/:product_id')
+  .get(authModel.protect, orderModel.getOrderProductsByProductId)
+  .put(authModel.protect, orderModel.updateOrderProduct)
+  .delete(authModel.protect, orderModel.deleteOrderProduct);
 
 module.exports = router;

@@ -21,8 +21,10 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
     });
     return user;
   } catch (err) {
-    res.status(400).json(err);
-    console.log(err);
+    res.status(400).json({
+      status: 'error',
+      errorMessage: 'Email already exists!',
+    });
   }
 };
 
@@ -33,6 +35,9 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     const sql = 'SELECT * FROM users WHERE email=($1)';
     const result = await conn.query(sql, [email]);
     const user = result.rows[0];
+    if (!user) {
+      throw new Error('No user!');
+    }
     const check = await bcrypt.compare(password, user.password_digest);
     if (check) {
       const token = jwt.sign({ user }, process.env.JWT_SECRET);
@@ -41,17 +46,23 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
         token,
         data: { user },
       });
+      // console.log(res);
     } else {
       throw new Error('Invalid information');
     }
   } catch (err) {
-    res.status(400).json(err);
-    console.log(err);
+    res.status(400).json({
+      status: 400,
+      errorMessage: 'Check your email or password again!',
+    });
+    // console.log(res);
   }
 };
 
 exports.protect = async (req: Request, res: Response, next: NextFunction) => {
   let token: string | undefined;
+  // console.log('entered middleware: ');
+  // console.log('req header: ', req.headers);
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
