@@ -28,6 +28,10 @@ router
   .post(authModel.protect, orderModel.addOrderProduct);
 
 router
+  .route('/:id/checkout-session')
+  .post(authModel.protect, orderModel.getCheckoutSession);
+
+router
   .route('/:order_id/products/:product_id')
   .get(authModel.protect, orderModel.getOrderProductsByProductId)
   .put(authModel.protect, orderModel.updateOrderProduct)

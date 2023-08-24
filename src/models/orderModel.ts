@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import client from '../database';
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // type Order = {
 //   order_id: Number;
@@ -8,6 +9,36 @@ import client from '../database';
 //   user_id: Number;
 //   status: string;
 // };
+
+exports.getCheckoutSession = async (req: Request, res: Response) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: [...req.body.items].map((item) => {
+        return {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: item.price * 100,
+          },
+          quantity: item.quantity,
+        };
+      }),
+      success_url: `${req.protocol}://localhost:4200/order-confirm`,
+      cancel_url: `${req.protocol}://localhost:4200/cart`,
+    });
+    res.status(200).json({
+      status: 'success',
+      url: session.url,
+    });
+  } catch (err) {
+    res.status(400).json(err);
+    console.error(err);
+  }
+};
 
 exports.getAllOrders = async (req: Request, res: Response) => {
   const status = req.query.status;
