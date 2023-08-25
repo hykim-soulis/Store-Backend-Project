@@ -168,20 +168,20 @@ Users need to be able to browse an index of all products, see the specifics of a
 - Referenced by:
   TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
 
-       Column      |          Type          | Collation | Nullable |                Default                 | Storage  | Compression | Stats target | Description
+| Column          | Type                   | Collation | Nullable | Default                                | Storage  | Compression | Stats target | Description |
+| --------------- | ---------------------- | --------- | -------- | -------------------------------------- | -------- | ----------- | ------------ | ----------- |
+| user_id         | integer                |           | not null | nextval('users_user_id_seq'::regclass) | plain    |             |              |             |
+| first_name      | character varying(50)  |           | not null |                                        | extended |             |              |             |
+| last_name       | character varying(16)  |           | not null |                                        | extended |             |              |             |
+| email           | character varying(100) |           | not null |                                        | extended |             |              |             |
+| password_digest | character varying      |           | not null |                                        | extended |             |              |             |
 
-  -----------------+------------------------+-----------+----------+----------------------------------------+----------+-------------+--------------+-------------
-  user_id | integer | | not null | nextval('users_user_id_seq'::regclass) | plain | | |
-  first_name | character varying(50) | | not null | | extended | | |
-  last_name | character varying(16) | | not null | | extended | | |
-  email | character varying(100) | | not null | | extended | | |
-  password_digest | character varying | | not null | | extended | | |
-  Indexes:
-  "users_pkey" PRIMARY KEY, btree (user_id)
-  "users_email_key" UNIQUE CONSTRAINT, btree (email)
-  Referenced by:
-  TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
-  Access method: heap
+Indexes:
+"users_pkey" PRIMARY KEY, btree (user_id)
+"users_email_key" UNIQUE CONSTRAINT, btree (email)
+Referenced by:
+TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
+Access method: heap
 
 #### orders
 
@@ -198,11 +198,12 @@ Users need to be able to browse an index of all products, see the specifics of a
 - Referenced by:
   TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
 
-  Column | Type | Collation | Nullable | Default | Storage | Compression | Stats target | Description
-  ----------+-----------------------+-----------+----------+------------------------------------------+----------+-------------+--------------+-------------
-  order_id | integer | | not null | nextval('orders_order_id_seq'::regclass) | plain | | |
-  status | character varying(15) | | not null | | extended | | |
-  user_id | integer | | not null | | plain | | |
+  | Column   | Type                  | Collation | Nullable | Default                                  | Storage  | Compression | Stats target | Description |
+  | -------- | --------------------- | --------- | -------- | ---------------------------------------- | -------- | ----------- | ------------ | ----------- |
+  | order_id | integer               |           | not null | nextval('orders_order_id_seq'::regclass) | plain    |             |              |             |
+  | status   | character varying(15) |           | not null |                                          | extended |             |              |             |
+  | user_id  | integer               |           | not null |                                          | plain    |             |              |             |
+
   Indexes:
   "orders_pkey" PRIMARY KEY, btree (order_id)
   Foreign-key constraints:
@@ -226,13 +227,13 @@ Users need to be able to browse an index of all products, see the specifics of a
   "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
   "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
 
-        Column       |  Type   | Collation | Nullable |                          Default                          | Storage | Compression | Stats target | Description
+  | Column            | Type    | Collation | Nullable | Default                                                   | Storage | Compression | Stats target | Description |
+  | ----------------- | ------- | --------- | -------- | --------------------------------------------------------- | ------- | ----------- | ------------ | ----------- |
+  | order_products_id | integer |           | not null | nextval('order_products_order_products_id_seq'::regclass) | plain   |             |              |             |
+  | quantity          | integer |           | not null |                                                           | plain   |             |              |             |
+  | product_id        | integer |           | not null |                                                           | plain   |             |              |             |
+  | order_id          | integer |           | not null |                                                           | plain   |             |              |             |
 
-  -------------------+---------+-----------+----------+-----------------------------------------------------------+---------+-------------+--------------+-------------
-  order_products_id | integer | | not null | nextval('order_products_order_products_id_seq'::regclass) | plain | | |
-  quantity | integer | | not null | | plain | | |
-  product_id | integer | | not null | | plain | | |
-  order_id | integer | | not null | | plain | | |
   Indexes:
   "order_products_pkey" PRIMARY KEY, btree (order_products_id)
   Foreign-key constraints:
