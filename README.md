@@ -110,15 +110,20 @@ Users need to be able to browse an index of all products, see the specifics of a
 
 #### Orders
 
-| Method | API Endpoint         | Model        | Parameter or Query)            | Sample JSON body                                                      |
-| ------ | -------------------- | ------------ | ------------------------------ | --------------------------------------------------------------------- |
-| GET    | /order               | getAllOrders | JWT token                      | none                                                                  |
-| GET    | /order?status=active | getAllOrders | JWT token,status-string(query) | none                                                                  |
-| GET    | /order/:id           | getOrder     | JWT token, id-number(params)   | none                                                                  |
-| POST   | /order               | createOrder  | JWT token                      | { "status": "active" }                                                |
-| PUT    | /order/:id           | updateOrder  | JWT token, id-number(params)   | { "status": "completed" }                                             |
-| DELETE | /order/:id           | deleteOrder  | JWT token, id-number(params)   | none                                                                  |
-| POST   | /order/:id/products  | addProducts  | JWT token, id-number(params)   | { "quantity": 5, "product_id": <product_id>, "order_id": <order_id> } |
+| Method | API Endpoint                          | Model                       | Parameter or Query             | Sample JSON body                                                                                                                                                                                                            |
+| ------ | ------------------------------------- | --------------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | /order                                | getAllOrders                | JWT token                      | none                                                                                                                                                                                                                        |
+| GET    | /order?status=active                  | getOrderByStatus            | JWT token,status-string(query) | none                                                                                                                                                                                                                        |
+| GET    | /order/:order_id                      | getOrder                    | JWT token, id-number(params)   | none                                                                                                                                                                                                                        |
+| POST   | /order                                | createOrder                 | JWT token                      | { "status": "active" }                                                                                                                                                                                                      |
+| PUT    | /order/:order_id                      | updateOrder                 | JWT token, id-number(params)   | { "status": "completed" }                                                                                                                                                                                                   |
+| DELETE | /order/:order_id                      | deleteOrder                 | JWT token, id-number(params)   | none                                                                                                                                                                                                                        |
+| GET    | /order/:order_id/products             | getAllOrderProducts         | JWT token, id-number(params)   |                                                                                                                                                                                                                             |
+| POST   | /order/:order_id/products             | addProducts                 | JWT token, id-number(params)   | { "quantity": 5, "product_id": <product_id>, "order_id": <order_id> }                                                                                                                                                       |
+| GET    | /order/:order_id/products/:product_id | getOrderProductsByProductId | JWT token, id-number(params)   |                                                                                                                                                                                                                             |
+| PUT    | /order/:order_id/products/:product_id | updateOrderProduct          | JWT token, id-number(params)   |                                                                                                                                                                                                                             |
+| DELETE | /order/:order_id/products/:product_id | deleteOrderProduct          | JWT token, id-number(params)   |                                                                                                                                                                                                                             |
+| POST   | /order/:id/checkout-session           | getCheckoutSession          | JWT token, id-number(params)   | {"product_id": <product_id>, "order_products_id": <order_products_id>, "quantity": 5, "order_id": <order_id>, "name": <name>, "price": <price>, "category": <category>, "img_url": <img_url>, "description": <description>} |
 
 ### Data Schema
 
@@ -128,29 +133,15 @@ Users need to be able to browse an index of all products, see the specifics of a
 | ----------- | ---------------------- | --------- | -------- | -------------------------------------------- |
 | product_id  | integer                |           | not null | nextval('products_product_id_seq'::regclass) |
 | name        | character varying(100) |           | not null |                                              |
-| price       | integer                |           | not null |                                              |
+| price       | numeric(10,2)          |           | not null |                                              |
 | category    | character varying(100) |           | not null |                                              |
-| img_url     | character varying(100) |           | not null |                                              |
-| description | character varying(100) |           | not null |                                              |
+| img_url     | character varying      |           | not null |                                              |
+| description | character varying      |           | not null |                                              |
 
-- Indexes:
-  "products_pkey" PRIMARY KEY, btree (product_id)
-- Referenced by:
-  TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
-
-  Column | Type | Collation | Nullable | Default | Storage | Compression | Stats target | Description
-  -------------+------------------------+-----------+----------+----------------------------------------------+----------+-------------+--------------+-------------
-  product_id | integer | | not null | nextval('products_product_id_seq'::regclass) | plain | | |
-  name | character varying(100) | | not null | | extended | | |
-  price | numeric(10,2) | | not null | | main | | |
-  category | character varying(100) | | not null | | extended | | |
-  img_url | character varying | | not null | | extended | | |
-  description | character varying | | not null | | extended | | |
-  Indexes:
-  "products_pkey" PRIMARY KEY, btree (product_id)
-  Referenced by:
-  TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
-  Access method: heap
+Indexes:
+"products_pkey" PRIMARY KEY, btree (product_id)
+Referenced by:
+TABLE "order_products" CONSTRAINT "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
 
 #### users
 
@@ -162,26 +153,11 @@ Users need to be able to browse an index of all products, see the specifics of a
 | email           | character varying(100) |           | not null |                                        |
 | password_digest | character varying      |           | not null |                                        |
 
-- Indexes:
-  "users_pkey" PRIMARY KEY, btree (user_id)
-  "users_email_key" UNIQUE CONSTRAINT, btree (email)
-- Referenced by:
-  TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
-
-| Column          | Type                   | Collation | Nullable | Default                                | Storage  | Compression | Stats target | Description |
-| --------------- | ---------------------- | --------- | -------- | -------------------------------------- | -------- | ----------- | ------------ | ----------- |
-| user_id         | integer                |           | not null | nextval('users_user_id_seq'::regclass) | plain    |             |              |             |
-| first_name      | character varying(50)  |           | not null |                                        | extended |             |              |             |
-| last_name       | character varying(16)  |           | not null |                                        | extended |             |              |             |
-| email           | character varying(100) |           | not null |                                        | extended |             |              |             |
-| password_digest | character varying      |           | not null |                                        | extended |             |              |             |
-
 Indexes:
 "users_pkey" PRIMARY KEY, btree (user_id)
 "users_email_key" UNIQUE CONSTRAINT, btree (email)
 Referenced by:
 TABLE "orders" CONSTRAINT "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
-Access method: heap
 
 #### orders
 
@@ -191,26 +167,12 @@ Access method: heap
 | status   | character varying(15) |           | not null |                                          |
 | user_id  | integer               |           | not null |                                          |
 
-- Indexes:
-  "orders_pkey" PRIMARY KEY, btree (order_id)
-- Foreign-key constraints:
-  "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
-- Referenced by:
-  TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
-
-  | Column   | Type                  | Collation | Nullable | Default                                  | Storage  | Compression | Stats target | Description |
-  | -------- | --------------------- | --------- | -------- | ---------------------------------------- | -------- | ----------- | ------------ | ----------- |
-  | order_id | integer               |           | not null | nextval('orders_order_id_seq'::regclass) | plain    |             |              |             |
-  | status   | character varying(15) |           | not null |                                          | extended |             |              |             |
-  | user_id  | integer               |           | not null |                                          | plain    |             |              |             |
-
-  Indexes:
-  "orders_pkey" PRIMARY KEY, btree (order_id)
-  Foreign-key constraints:
-  "orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
-  Referenced by:
-  TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
-  Access method: heap
+Indexes:
+"orders_pkey" PRIMARY KEY, btree (order_id)
+Foreign-key constraints:
+"orders_user_id_fkey" FOREIGN KEY (user_id) REFERENCES users(user_id)
+Referenced by:
+TABLE "order_products" CONSTRAINT "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
 
 #### order_products
 
@@ -221,21 +183,8 @@ Access method: heap
 | product_id        | integer |           | not null |                                                           |
 | order_id          | integer |           | not null |                                                           |
 
-- Indexes:
-  "order_products_pkey" PRIMARY KEY, btree (order_products_id)
-- Foreign-key constraints:
-  "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
-  "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
-
-  | Column            | Type    | Collation | Nullable | Default                                                   | Storage | Compression | Stats target | Description |
-  | ----------------- | ------- | --------- | -------- | --------------------------------------------------------- | ------- | ----------- | ------------ | ----------- |
-  | order_products_id | integer |           | not null | nextval('order_products_order_products_id_seq'::regclass) | plain   |             |              |             |
-  | quantity          | integer |           | not null |                                                           | plain   |             |              |             |
-  | product_id        | integer |           | not null |                                                           | plain   |             |              |             |
-  | order_id          | integer |           | not null |                                                           | plain   |             |              |             |
-
-  Indexes:
-  "order_products_pkey" PRIMARY KEY, btree (order_products_id)
-  Foreign-key constraints:
-  "order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
-  "order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
+Indexes:
+"order_products_pkey" PRIMARY KEY, btree (order_products_id)
+Foreign-key constraints:
+"order_products_order_id_fkey" FOREIGN KEY (order_id) REFERENCES orders(order_id)
+"order_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(product_id)
