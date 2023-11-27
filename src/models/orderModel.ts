@@ -2,14 +2,6 @@ import { Request, Response } from 'express';
 import client from '../database';
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-// type Order = {
-//   order_id: Number;
-//   product_id: Number;
-//   quantity: number;
-//   user_id: Number;
-//   status: string;
-// };
-
 exports.getCheckoutSession = async (req: Request, res: Response) => {
   try {
     const session = await stripe.checkout.sessions.create({

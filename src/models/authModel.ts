@@ -3,7 +3,7 @@ import client from '../database';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.signup = async (req: Request, res: Response, next: NextFunction) => {
+exports.signup = async (req: Request, res: Response) => {
   const { first_name, last_name, email, password } = req.body;
   try {
     const conn = await client.connect();
@@ -28,7 +28,7 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-exports.login = async (req: Request, res: Response, next: NextFunction) => {
+exports.login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     const conn = await client.connect();
@@ -46,7 +46,6 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
         token,
         data: { user },
       });
-      // console.log(res);
     } else {
       throw new Error('Invalid information');
     }
@@ -55,14 +54,11 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
       status: 400,
       errorMessage: 'Check your email or password again!',
     });
-    // console.log(res);
   }
 };
 
 exports.protect = async (req: Request, res: Response, next: NextFunction) => {
   let token: string | undefined;
-  // console.log('entered middleware: ');
-  // console.log('req header: ', req.headers);
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')

@@ -1,6 +1,6 @@
 # Storefront Backend Project
 
-The goal of this project is to create a SQL database and tables for the store application and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from the **API Requirements** section below.<br>
+The goal of this project is to create a SQL database and tables for the store application and create a RESTful API that can be accessed by frontend developers using typescript. You can find the data shape of the database, tables and endpoints from the **API Details** section below.<br>
 This is a project for Udacity Full Stack JavaScript Developer Nanodegree Program.
 
 ## Installation and Startup
@@ -76,7 +76,7 @@ JWT_SECRET=my-secret-password-protector-private-key
 JWT_EXPIRES_IN=90d
 ```
 
-## API Requirements
+## API Details
 
 Users need to be able to browse an index of all products, see the specifics of a single product, and add products to an order that they can view in a cart page.
 
