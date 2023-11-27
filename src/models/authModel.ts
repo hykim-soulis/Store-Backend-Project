@@ -3,6 +3,13 @@ import client from '../database';
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+/**
+ * Creates a new user account and generates an authentication token.
+ *
+ * @param {Request} req - The Express Request object containing user details in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object>} - The created user object and an authentication token.
+ */
 exports.signup = async (req: Request, res: Response) => {
   const { first_name, last_name, email, password } = req.body;
   try {
@@ -28,6 +35,13 @@ exports.signup = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Logs in a user and generates an authentication token.
+ *
+ * @param {Request} req - The Express Request object containing user login details in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object>} - The authenticated user object and an authentication token.
+ */
 exports.login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
@@ -57,6 +71,13 @@ exports.login = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Middleware function to protect routes by verifying JWT token and setting the current user in res.locals.
+ *
+ * @param {Request} req - The Express Request object.
+ * @param {Response} res - The Express Response object.
+ * @param {NextFunction} next - The Express NextFunction to proceed to the next middleware.
+ */
 exports.protect = async (req: Request, res: Response, next: NextFunction) => {
   let token: string | undefined;
   if (

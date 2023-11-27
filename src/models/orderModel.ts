@@ -2,6 +2,12 @@ import { Request, Response } from 'express';
 import client from '../database';
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Creates a new Stripe Checkout Session for processing payments.
+ *
+ * @param {Request} req - The Express Request object containing items for checkout in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ */
 exports.getCheckoutSession = async (req: Request, res: Response) => {
   try {
     const session = await stripe.checkout.sessions.create({
@@ -32,6 +38,13 @@ exports.getCheckoutSession = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all orders for the authenticated user, optionally filtered by status.
+ *
+ * @param {Request} req - The Express Request object containing query parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Array>} - An array of order objects.
+ */
 exports.getAllOrders = async (req: Request, res: Response) => {
   const status = req.query.status;
   const currentUser = res.locals.user;
@@ -62,6 +75,13 @@ exports.getAllOrders = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Creates a new order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing order status in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object>} - The created order object.
+ */
 exports.createOrder = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -84,6 +104,13 @@ exports.createOrder = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves a specific order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The retrieved order object, or null if not found.
+ */
 exports.getOrder = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -106,6 +133,13 @@ exports.getOrder = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves orders for the authenticated user filtered by a specific status.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Array>} - An array of order objects.
+ */
 exports.getOrderByStatus = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -128,6 +162,13 @@ exports.getOrderByStatus = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates the status of a specific order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters and updated status in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The updated order object, or null if not found.
+ */
 exports.updateOrder = async (req: Request, res: Response) => {
   const { status } = req.body;
   const order_id = req.params.id;
@@ -152,6 +193,13 @@ exports.updateOrder = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a specific order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The deleted order object, or null if not found.
+ */
 exports.deleteOrder = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -173,6 +221,13 @@ exports.deleteOrder = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves all products associated with a specific order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Array>} - An array of order product objects.
+ */
 exports.getAllOrderProducts = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -198,6 +253,13 @@ exports.getAllOrderProducts = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves a specific order product for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The retrieved order product object, or null if not found.
+ */
 exports.getOrderProductsByProductId = async (req: Request, res: Response) => {
   const currentUser = res.locals.user;
   const user_id = currentUser.user_id;
@@ -223,6 +285,13 @@ exports.getOrderProductsByProductId = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Adds a new product to a specific order for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters and product details in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object>} - The added order product object.
+ */
 exports.addOrderProduct = async (req: Request, res: Response) => {
   const order_id = req.params.id;
 
@@ -246,6 +315,13 @@ exports.addOrderProduct = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Updates the quantity of a specific order product for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters and updated quantity in the request body.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The updated order product object, or null if not found.
+ */
 exports.updateOrderProduct = async (req: Request, res: Response) => {
   const { quantity } = req.body;
   const order_id = req.params.order_id;
@@ -269,6 +345,13 @@ exports.updateOrderProduct = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Deletes a specific order product for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Object|null>} - The deleted order product object, or null if not found.
+ */
 exports.deleteOrderProduct = async (req: Request, res: Response) => {
   const { order_id, product_id } = req.params;
   try {
@@ -290,6 +373,13 @@ exports.deleteOrderProduct = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Retrieves the shopping cart for the authenticated user.
+ *
+ * @param {Request} req - The Express Request object containing route parameters.
+ * @param {Response} res - The Express Response object to send the server response.
+ * @returns {Promise<Array>} - An array of order product objects representing the shopping cart.
+ */
 exports.getCart = async (req: Request, res: Response) => {
   const order_id = req.params;
   try {
