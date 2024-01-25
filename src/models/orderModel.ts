@@ -20,7 +20,7 @@ exports.getCheckoutSession = async (req: Request, res: Response) => {
             product_data: {
               name: item.name,
             },
-            unit_amount: item.price * 100,
+            unit_amount: Math.round(Number(item.price) * 100),
           },
           quantity: item.quantity,
         };
